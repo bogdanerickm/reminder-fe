@@ -15,7 +15,7 @@ import { saveReminder } from '../api';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -53,9 +53,7 @@ export default function SendReminder() {
       sendByTelegram,
       sendByEmail
     }
-
     const {json : response} = await (await saveReminder(dataToSend)).json();
-
     console.log('respuestinha', response);
   }
   
@@ -86,10 +84,6 @@ export default function SendReminder() {
             <Grid item xs={12} sm={6}>
               <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Phone', minLength: { value: 10, message: "Phone has to be 10 numbers"}, maxLength: { value: 10, message: "Phone has to be 10 numbers"} })} fullWidth label="Phone" name="phone" type="number" />
               <p className={classes.colorError}>{errors.phone && errors.phone.message}</p>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField variant="outlined" inputRef={register({ required: true, pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "invalid email address"}})} fullWidth label="Email from" name="emailFrom" />
-              <p className={classes.colorError}>{errors.emailFrom && errors.emailFrom.message}</p>
             </Grid>
             <Grid item xs={12}>
               <TextField variant="outlined" inputRef={register({ required: false, pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "invalid email address"}})} fullWidth label="Email to" name="emailTo"/>
