@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DateTimeField from '../components/DateTimeField';
 import { useForm } from "react-hook-form";
+import { saveReminder } from '../api';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,16 +45,18 @@ export default function SendReminder() {
 
   const { register, handleSubmit, watch, errors } = useForm();
 
-  const onSubmit = data => {
-    console.log('datita',data);
+  const onSubmit = async data => {
     const dataToSend = {
       ...data,
       selectedDate,
-      selectedTime,
+      selectedTime: selectedTime.getTime(),
       sendByTelegram,
       sendByEmail
     }
-    console.log('datita completa',dataToSend);
+
+    const {json : response} = await (await saveReminder(dataToSend)).json();
+
+    console.log('respuestinha', response);
   }
   
   const handleDateChange = (date) => {
@@ -77,12 +80,12 @@ export default function SendReminder() {
           <Grid container spacing={2}>
               <DateTimeField date={selectedDate} dateHandler={handleDateChange} time={selectedTime} timeHandler={handleTimeChange}/>
             <Grid item xs={12} sm={6}>
-              <TextField variant="outlined" inputRef={register({ required: true, minLength:1, maxLength: 10 })} name="firstName" fullWidth label="First Name" />
+              <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Name', minLength:{ value: 2, message: "Minimum of  char"}, maxLength: { value: 10, message: "Maximum of 10 char"} })} name="firstName" fullWidth label="First Name" />
               <p className={classes.colorError}>{errors.firstName && errors.firstName.message}</p>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField variant="outlined" inputRef={register({ required: true, minLength:1, maxLength: 10 })} fullWidth label="Last Name" name="lastName" />
-              {errors.lastName && errors.lastName.message}
+              <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Phone', minLength: { value: 10, message: "Phone has to be 10 numbers"}, maxLength: { value: 10, message: "Phone has to be 10 numbers"} })} fullWidth label="Phone" name="phone" type="number" />
+              <p className={classes.colorError}>{errors.phone && errors.phone.message}</p>
             </Grid>
             <Grid item xs={12}>
               <TextField variant="outlined" inputRef={register({ required: true, pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "invalid email address"}})} fullWidth label="Email from" name="emailFrom" />
@@ -90,10 +93,11 @@ export default function SendReminder() {
             </Grid>
             <Grid item xs={12}>
               <TextField variant="outlined" inputRef={register({ required: false, pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "invalid email address"}})} fullWidth label="Email to" name="emailTo"/>
-              <p className={classes.emailTo}>{errors.emailTo && errors.emailTo.message}</p>
+              <p className={classes.colorError}>{errors.emailTo && errors.emailTo.message}</p>
             </Grid>
             <Grid item xs={12}>
-              <TextField variant="outlined" inputRef={register({ required: true, maxLength: 40 })} fullWidth multiline rows={6} name="body" label="body" type="text" />
+              <TextField variant="outlined" inputRef={register({ required: true, maxLength: {value:40, message:'Maximum 40 chars'} })} fullWidth multiline rows={6} name="body" label="Body" type="text" />
+              <p className={classes.colorError}>{errors.body && errors.body.message}</p>
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
