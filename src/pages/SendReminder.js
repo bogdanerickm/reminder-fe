@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SendReminder() {
-  const  classes                                  = useStyles();
-  const [selectedDate, setSelectedDate]           = useState(new Date());
-  const [selectedTime, setSelectedTime]           = useState(new Date());
-  const [notifyByTelegram, setNotifyByTelegram]   = useState(false);
-  const [notifyByEmail, setNotifyByEmail]         = useState(false);
-  const { register, handleSubmit, watch, errors } = useForm();
+  const  classes                                  = useStyles()
+  const [selectedDate, setSelectedDate]           = useState(new Date())
+  const [selectedTime, setSelectedTime]           = useState(new Date())
+  const [notifyByTelegram, setNotifyByTelegram]   = useState(false)
+  const [notifyByEmail, setNotifyByEmail]         = useState(false)
+  const { register, handleSubmit, watch, errors } = useForm()
 
   const onSubmit = async data => {
     const dataTonotify = {
@@ -61,12 +61,12 @@ export default function SendReminder() {
   }
   
   const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+    setSelectedDate(date)
+  }
 
   const handleTimeChange = (time) => {
-    setSelectedTime(time);
-  };
+    setSelectedTime(time)
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -75,7 +75,7 @@ export default function SendReminder() {
         <Avatar className={classes.avatar}>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Reminder
+          Reminder FE
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
