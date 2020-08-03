@@ -1,7 +1,7 @@
 
 
 export const saveReminder = (dataToSend) => {
-    return fetch('https://httpbin.org/post', {
+    return fetch('http://localhost:3030/reminders', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

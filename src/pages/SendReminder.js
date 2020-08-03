@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container';
 import DateTimeField from '../components/DateTimeField';
 import { useForm } from "react-hook-form";
 import { saveReminder } from '../api';
-
+import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(2),
@@ -37,24 +37,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SendReminder() {
-  const classes                             = useStyles();
-  const [selectedDate, setSelectedDate]     = useState(new Date());
-  const [selectedTime, setSelectedTime]     = useState(new Date());
-  const [sendByTelegram, setSendByTelegram] = useState(false);
-  const [sendByEmail, setSendByEmail]       = useState(false);
-
+  const  classes                                  = useStyles();
+  const [selectedDate, setSelectedDate]           = useState(new Date());
+  const [selectedTime, setSelectedTime]           = useState(new Date());
+  const [notifyByTelegram, setNotifyByTelegram]   = useState(false);
+  const [notifyByEmail, setNotifyByEmail]         = useState(false);
   const { register, handleSubmit, watch, errors } = useForm();
 
   const onSubmit = async data => {
-    const dataToSend = {
+    const dataTonotify = {
       ...data,
-      selectedDate,
-      selectedTime: selectedTime.getTime(),
-      sendByTelegram,
-      sendByEmail
+      selectedDateTime: formatDateTime(),
+      notifyByTelegram,
+      notifyByEmail
     }
-    const {json : response} = await (await saveReminder(dataToSend)).json();
-    console.log('respuestinha', response);
+    const {json : response} = await (await saveReminder(dataTonotify)).json();
+  }
+
+  const formatDateTime = () => {
+    let formattedDate = new moment(selectedDate).format('YYYY-MM-DD')
+    let formattedTime = new moment(selectedTime).format('HH:mm')
+    return new Date(`${formattedDate} ${formattedTime}`)
   }
   
   const handleDateChange = (date) => {
@@ -78,8 +81,8 @@ export default function SendReminder() {
           <Grid container spacing={2}>
               <DateTimeField date={selectedDate} dateHandler={handleDateChange} time={selectedTime} timeHandler={handleTimeChange}/>
             <Grid item xs={12} sm={6}>
-              <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Name', minLength:{ value: 2, message: "Minimum of  char"}, maxLength: { value: 10, message: "Maximum of 10 char"} })} name="firstName" fullWidth label="First Name" />
-              <p className={classes.colorError}>{errors.firstName && errors.firstName.message}</p>
+              <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Name', minLength:{ value: 2, message: "Minimum of  char"}, maxLength: { value: 10, message: "Maximum of 10 char"} })} name="name" fullWidth label="Name" />
+              <p className={classes.colorError}>{errors.name && errors.name.message}</p>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField variant="outlined" inputRef={register({ required: 'Please insert a valid Phone', minLength: { value: 10, message: "Phone has to be 10 numbers"}, maxLength: { value: 10, message: "Phone has to be 10 numbers"} })} fullWidth label="Phone" name="phone" type="number" />
@@ -95,17 +98,17 @@ export default function SendReminder() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value={sendByTelegram} onChange={()=> setSendByTelegram(!sendByTelegram)} color="primary" />}
+                control={<Checkbox value={notifyByTelegram} onChange={()=> setNotifyByTelegram(!notifyByTelegram)} color="primary" />}
                 label="I want to receive Telegram Notification."
               />
               <FormControlLabel
-                control={<Checkbox value={sendByEmail} onChange={()=> setSendByEmail(!sendByEmail)} color="primary" />}
+                control={<Checkbox value={notifyByEmail} onChange={()=> setNotifyByEmail(!notifyByEmail)} color="primary" />}
                 label="I want to receive an Email Notification."
               />
             </Grid>
           </Grid>
           <Button fullWidth type="submit" variant="outlined" color="primary" className={classes.submit} >
-            Send
+            notify
           </Button>
         </form>
       </div>
