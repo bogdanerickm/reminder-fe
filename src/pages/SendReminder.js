@@ -52,6 +52,14 @@ export default function SendReminder() {
       notifyByEmail
     }
     const {json : response} = await (await saveReminder(dataTonotify)).json();
+    clear()
+  }
+
+  const clear = () => {
+    setSelectedDate(new Date())
+    setSelectedTime(new Date())
+    setNotifyByTelegram(false)
+    setNotifyByEmail(false)
   }
 
   const formatDateTime = () => {
@@ -75,7 +83,7 @@ export default function SendReminder() {
         <Avatar className={classes.avatar}>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Reminder FE
+          Reminder
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
