@@ -42,7 +42,7 @@ export default function SendReminder() {
   const [selectedTime, setSelectedTime]           = useState(new Date())
   const [notifyByTelegram, setNotifyByTelegram]   = useState(false)
   const [notifyByEmail, setNotifyByEmail]         = useState(false)
-  const { register, handleSubmit, watch, errors } = useForm()
+  const { register, handleSubmit, watch, errors, reset } = useForm()
 
   const onSubmit = async data => {
     const dataTonotify = {
@@ -51,15 +51,25 @@ export default function SendReminder() {
       notifyByTelegram,
       notifyByEmail
     }
-    const {json : response} = await (await saveReminder(dataTonotify)).json();
-    clear()
+    // const {json : response} = await (await saveReminder(dataTonotify)).json();
+     saveReminder(dataTonotify)
+      .then( async data => {
+        const {json : response} = await data.json();
+        console.log(response);
+        clear()
+     })
+      .catch( e => {
+        console.log('error', e.message);
+      })
   }
 
   const clear = () => {
+    console.log('borrando');
     setSelectedDate(new Date())
     setSelectedTime(new Date())
     setNotifyByTelegram(false)
     setNotifyByEmail(false)
+    reset()
   }
 
   const formatDateTime = () => {
@@ -106,11 +116,11 @@ export default function SendReminder() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value={notifyByTelegram} onChange={()=> setNotifyByTelegram(!notifyByTelegram)} color="primary" />}
+                control={<Checkbox value={notifyByTelegram} onChange={()=> setNotifyByTelegram(!notifyByTelegram)} checked={notifyByTelegram} color="primary" />}
                 label="I want to receive Telegram Notification."
               />
               <FormControlLabel
-                control={<Checkbox value={notifyByEmail} onChange={()=> setNotifyByEmail(!notifyByEmail)} color="primary" />}
+                control={<Checkbox value={notifyByEmail} onChange={()=> setNotifyByEmail(!notifyByEmail)} checked={notifyByEmail} color="primary" />}
                 label="I want to receive an Email Notification."
               />
             </Grid>
