@@ -11,3 +11,13 @@ export const saveReminder = (dataToSend) => {
       body: JSON.stringify(dataToSend)
     });
 }
+
+export const getReminders = () => {
+    return fetch(API_URL + 'reminders', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+}

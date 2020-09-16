@@ -14,9 +14,7 @@ import { useForm } from "react-hook-form";
 import { saveReminder } from '../api';
 import moment from 'moment';
 import useNotification from '../components/NotificationMessage';
-
-// import Notification from '../components/NotificationMessage';
-
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,7 +47,7 @@ export default function SendReminder() {
   const [notifyByEmail, setNotifyByEmail] = useState(false)
   const { register, handleSubmit, watch, errors, reset } = useForm()
   const [Notification , notifyError, notifySuccess] = useNotification()
- 
+  const history = useHistory()
   const onSubmit = async data => {
     const dataToNotify = {
       ...data,
@@ -90,6 +88,11 @@ export default function SendReminder() {
   const handleTimeChange = (time) => {
     setSelectedTime(time)
   }
+  
+  const goToBoard = () => {
+    history.push('/board')
+  }
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -100,6 +103,9 @@ export default function SendReminder() {
         <Typography component="h1" variant="h5">
           Reminder
         </Typography>
+        <Button fullWidth onClick={goToBoard} variant="outlined" color="primary" className={classes.submit} >
+            board
+          </Button>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <DateTimeField date={selectedDate} dateHandler={handleDateChange} time={selectedTime} timeHandler={handleTimeChange} />
@@ -132,12 +138,11 @@ export default function SendReminder() {
           </Grid>
 
           <Notification/>
-          
           <Button fullWidth type="submit" variant="outlined" color="primary" className={classes.submit} >
             notify
           </Button>
         </form>
-          {/* <Comp/> */}
+         
       </div>
     </Container>
   );
